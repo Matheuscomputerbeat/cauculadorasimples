@@ -1,87 +1,72 @@
-* {
-    box-sizing: border-box;
-}
-
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    background-color: #f4f4f4;
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
 }
 
 .calculator {
-    background-color: #fff;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
     border-radius: 10px;
+    overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 400px;
     width: 100%;
 }
 
-.display {
-    width: 100%;
-    height: 50px;
+.calculator-display {
     background-color: #222;
     color: #fff;
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     text-align: right;
-    border: none;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.buttons {
+.calculator-buttons {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    gap: 1px;
 }
 
 .btn {
-    width: 100%;
+    background-color: #e0e0e0;
+    border: none;
     padding: 20px;
-    font-size: 1.2rem;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    font-size: 1.5rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.3s;
 }
 
-.btn:active {
-    background-color: #ddd;
+.btn:hover {
+    background-color: #d0d0d0;
 }
 
-.operator {
-    background-color: #ff9500;
-    color: white;
+.btn[data-action="clear"],
+.btn[data-action="equals"] {
+    background-color: #f78a1d;
+    color: #fff;
 }
 
-.operator:active {
-    background-color: #e08500;
+.btn[data-action="clear"]:hover,
+.btn[data-action="equals"]:hover {
+    background-color: #e67e22;
 }
 
-.equal {
-    grid-column: span 4;
-    background-color: #34c759;
-    color: white;
-}
-
-.equal:active {
-    background-color: #28a745;
-}
-
-@media (max-width: 480px) {
-    .btn {
+@media (max-width: 600px) {
+    .calculator-display {
+        font-size: 2rem;
         padding: 15px;
-        font-size: 1rem;
     }
 
-    .display {
-        height: 40px;
-        font-size: 1.2rem;
+    .btn {
+        font-size: 1.25rem;
+        padding: 15px;
     }
 }
