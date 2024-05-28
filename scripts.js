@@ -1,57 +1,89 @@
-let currentOperand = '';
-let previousOperand = '';
-let operation = undefined;
+document.addEventListener('DOMContentLoaded', function () {
+    const display = document.getElementById('display');
+    const buttons = document.querySelectorAll('.btn');
 
-function clearDisplay() {
-    currentOperand = '';
-    previousOperand = '';
-    operation = undefined;
-    updateDisplay();
-}
+    let currentInput = '';
+    let operator = '';
+    let firstNumber = '';
+    let secondNumber = '';
 
-function appendNumber(number) {
-    if (number === '.' && currentOperand.includes('.')) return;
-    currentOperand = currentOperand.toString() + number.toString();
-    updateDisplay();
-}
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+            const action = this.getAttribute('data-action');
+            if (!isNaN(action) || action === '.') {
+                handleNumber(action);
+            } else {
+                handleOperator(action);
+            }
+        });
+    });
 
-function chooseOperation(op) {
-    if (currentOperand === '') return;
-    if (previousOperand !== '') {
-        compute();
+    function handleNumber(number) {
+        if (currentInput.includes('.') && number === '.') return;
+        currentInput = currentInput === '0' ? number : currentInput + number;
+        updateDisplay(currentInput);
     }
-    operation = op;
-    previousOperand = currentOperand;
-    currentOperand = '';
-}
 
-function compute() {
-    let computation;
-    const prev = parseFloat(previousOperand);
-    const current = parseFloat(currentOperand);
-    if (isNaN(prev) || isNaN(current)) return;
-    switch (operation) {
-        case '+':
-            computation = prev + current;
-            break;
-        case '-':
-            computation = prev - current;
-            break;
-        case '*':
-            computation = prev * current;
-            break;
-        case '/':
-            computation = prev / current;
-            break;
-        default:
-            return;
+    function handleOperator(op) {
+        switch (op) {
+            case 'clear':
+                currentInput = '0';
+                operator = '';
+                firstNumber = '';
+                secondNumber = '';
+                updateDisplay(currentInput);
+                break;
+            case 'backspace':
+                currentInput = currentInput.slice(0, -1) || '0';
+                updateDisplay(currentInput);
+                break;
+            case 'percent':
+                currentInput = (parseFloat(currentInput) / 100).toString();
+                updateDisplay(currentInput);
+                break;
+            case 'equals':
+                if (operator && firstNumber !== '' && currentInput !== '') {
+                    secondNumber = currentInput;
+                    currentInput = calculate(firstNumber, secondNumber, operator).toString();
+                    operator = '';
+                    firstNumber = '';
+                    updateDisplay(currentInput);
+                }
+                break;
+            default:
+                if (firstNumber === '') {
+                    firstNumber = currentInput;
+                    operator = op;
+                    currentInput = '';
+                } else if (operator) {
+                    secondNumber = currentInput;
+                    currentInput = calculate(firstNumber, secondNumber, operator).toString();
+                    operator = op;
+                    firstNumber = currentInput;
+                    currentInput = '';
+                }
+                break;
+        }
     }
-    currentOperand = computation;
-    operation = undefined;
-    previousOperand = '';
-    updateDisplay();
-}
 
-function updateDisplay() {
-    document.getElementById('display').value = currentOperand;
-}
+    function updateDisplay(value) {
+        display.textContent = value;
+    }
+
+    function calculate(num1, num2, operator) {
+        num1 = parseFloat(num1);
+        num2 = parseFloat(num2);
+        switch (operator) {
+            case 'add':
+                return num1 + num2;
+            case 'subtract':
+                return num1 - num2;
+            case 'multiply':
+                return num1 * num2;
+            case 'divide':
+                return num1 / num2;
+            default:
+                return num2;
+        }
+    }
+});
